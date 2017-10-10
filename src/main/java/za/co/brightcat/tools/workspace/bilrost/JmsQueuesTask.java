@@ -8,23 +8,40 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import za.co.brightcat.tools.workspace.Task;
+import za.co.brightcat.tools.workspace.bilrost.wildfly.JmsQueue;
 
 public class JmsQueuesTask implements Task {
 
-    public JmsQueuesTask(String jbossCliCommand) {
-        this.jbossCliCommand = jbossCliCommand;
-    }
     private final String jbossCliCommand;
-    
+    private final JmsQueue[] queues;
+
+    public JmsQueuesTask(String jbossCliCommand, JmsQueue... queues) {
+        if (queues.length == 0) {
+            throw new IllegalArgumentException("At least 1 JmsQueue required");
+        }
+        this.jbossCliCommand = jbossCliCommand;
+        this.queues = queues;
+    }
     
     @Override
     public void run() {
-        final String[] commands = {
+        final String[] command = {
             jbossCliCommand,
             "--connect",
-            "--commands=jms-queue add --queue-address=TesterClixx --entries=jms/TesterClixx"
+            ""
         };
-        ProcessBuilder pb = new ProcessBuilder(commands);
+                
+        final String[] commands = new String[queues.length];
+        int i = 0;
+        for (JmsQueue queue : queues) {
+            final String s = "jms-queue add --queue-address=" + queue.getQueueAddress() +" --entries=[" + String.join(",", queue.getEntries()) + "]";
+            commands[i++] = s;
+        }
+        
+        command[2] = "--commands=" + String.join(",", commands);
+        
+        ProcessBuilder pb = new ProcessBuilder(command);
+        log(pb.command().toString());
         Map<String, String> environment = pb.environment();
         environment.put("NOPAUSE","true");
         try {
