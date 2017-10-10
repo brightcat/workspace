@@ -15,8 +15,8 @@ public class Main {
          * Setup JDBC datasources
          */
         SequencesTask sequencesTask = new SequencesTask(new InstallWebSphereTask());
-        
-        ParallelTask setupTasks = new ParallelTask(new JmsQueuesTask(), new JdbcDatasourceTask(), new JmsConnectionFactoryTask());
+        JmsQueuesTask jmsSetupTask = new JmsQueuesTask("C:\\dev\\wildfly-10.1.0.Final\\bin\\jboss-cli.bat");
+        ParallelTask setupTasks = new ParallelTask(jmsSetupTask, new JdbcDatasourceTask(), new JmsConnectionFactoryTask());
         
         sequencesTask.add(setupTasks);
         
