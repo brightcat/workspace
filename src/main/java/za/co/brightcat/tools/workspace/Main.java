@@ -1,9 +1,9 @@
 package za.co.brightcat.tools.workspace;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import za.co.brightcat.tools.workspace.wildfly.Datasource;
 import za.co.brightcat.tools.workspace.wildfly.JmsConnectionFactoryTask;
 import za.co.brightcat.tools.workspace.wildfly.JmsQueuesTask;
 import za.co.brightcat.tools.workspace.wildfly.InstallWebSphereTask;
@@ -33,10 +33,11 @@ public class Main implements Runnable {
 
     @Override
     public void run() {
-        SequencesTask sequencesTask = new SequencesTask(new InstallWebSphereTask());
+        final SequencesTask sequencesTask = new SequencesTask(new InstallWebSphereTask());
         final ServerHandle serverHandle = serverHandle();
-        JmsQueuesTask jmsSetupTask = new JmsQueuesTask(serverHandle, testJmsQueues());
-        ParallelTask setupTasks = new ParallelTask(jmsSetupTask, new JdbcDatasourceTask(), new JmsConnectionFactoryTask());
+        final JmsQueuesTask jmsSetupTask = new JmsQueuesTask(serverHandle, testJmsQueues());
+        final JdbcDatasourceTask datasourcesTask = new JdbcDatasourceTask(serverHandle, testDatasources());
+        final ParallelTask setupTasks = new ParallelTask(jmsSetupTask, datasourcesTask, new JmsConnectionFactoryTask());
         
         sequencesTask.add(setupTasks);
         
@@ -60,6 +61,13 @@ public class Main implements Runnable {
             queue1,
             queue2,
             queue3
+        };
+    }
+
+    private Datasource[] testDatasources() {
+        return new Datasource[] {
+            new Datasource("TestSource1", "java:/jdbc/test/source1", "jdbc:h2:mem:source1", "h2"),
+            new Datasource("TestSource2", "java:/jdbc/test/source2", "jdbc:h2:mem:source1", "h2")
         };
     }
 }
