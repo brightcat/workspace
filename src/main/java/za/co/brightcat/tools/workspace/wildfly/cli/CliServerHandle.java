@@ -76,6 +76,6 @@ public class CliServerHandle implements ServerHandle {
     }
     
     private void log(String m) {
-        System.out.println(new Date() + "\t" + Thread.currentThread().getName() + "\t" + m);
+        LOGGER.log(Level.INFO, "{0}\t{1}", new Object[]{Thread.currentThread().getName(), m});
     }
 }
