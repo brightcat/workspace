@@ -2,11 +2,11 @@ package za.co.brightcat.tools.workspace.wildfly.cli;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import za.co.brightcat.tools.workspace.wildfly.Datasource;
 import za.co.brightcat.tools.workspace.wildfly.JmsQueue;
 import za.co.brightcat.tools.workspace.wildfly.JmsQueuesTask;
 import za.co.brightcat.tools.workspace.wildfly.ServerHandle;
@@ -36,6 +36,10 @@ public class CliServerHandle implements ServerHandle {
         
         command[2] = "--commands=" + String.join(",", commands);
         
+        exec(command);
+    }
+
+    private void exec(final String[] command) {
         ProcessBuilder pb = new ProcessBuilder(command);
         log(pb.command().toString());
         Map<String, String> environment = pb.environment();
@@ -45,7 +49,7 @@ public class CliServerHandle implements ServerHandle {
             toThread("jms-queue-stderr", proc.getErrorStream());
             toThread("jms-queue-stdin", proc.getInputStream());
             
-            proc.waitFor(10, TimeUnit.SECONDS);
+            proc.waitFor(30, TimeUnit.SECONDS);
             int exitValue = proc.exitValue();
             log("Process exit value: " + exitValue);
         } catch (IOException | InterruptedException ex) {
@@ -77,5 +81,19 @@ public class CliServerHandle implements ServerHandle {
     
     private void log(String m) {
         LOGGER.log(Level.INFO, "{0}\t{1}", new Object[]{Thread.currentThread().getName(), m});
+    }
+
+    @Override
+    public void addDatasources(Datasource... datasources) {
+       final String[] command = {
+            jbossCliCommand,
+            "--connect",
+            "--commands=data-source add "
+        };
+       
+        for (Datasource d : datasources) {
+            command[2] = String.format("--commands=data-source add --name=%s --connection-url=%s --driver-name=%s --jndi-name=%s", d.getName(), d.getUrl(), d.getDriver(), d.getJndi()) ;
+            exec(command);
+        }
     }
 }
