@@ -2,4 +2,4 @@
 ## Build
 mvn clean install
 ## Run
-java -jar <name>.jar
+java -jar &lt;name&gt;.jar
