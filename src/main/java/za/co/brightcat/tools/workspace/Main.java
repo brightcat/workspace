@@ -1,5 +1,9 @@
 package za.co.brightcat.tools.workspace;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import za.co.brightcat.tools.workspace.wildfly.JmsConnectionFactoryTask;
 import za.co.brightcat.tools.workspace.wildfly.JmsQueuesTask;
 import za.co.brightcat.tools.workspace.wildfly.InstallWebSphereTask;
@@ -9,8 +13,22 @@ import za.co.brightcat.tools.workspace.wildfly.ServerHandle;
 import za.co.brightcat.tools.workspace.wildfly.cli.CliServerHandle;
 
 public class Main implements Runnable {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new Main().run();
+    }
+    private final Properties properties;
+
+    public Main() throws IOException {
+        this.properties = properties();
+    }
+    
+    private Properties properties() throws IOException {
+        final Properties props = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try (InputStream is = loader.getResourceAsStream("application.properties")) {
+            props.load(is);
+        }
+        return props;
     }
 
     @Override
@@ -30,7 +48,7 @@ public class Main implements Runnable {
     }
     
     private String jbossCliCommand() {
-        return "c:\\dev\\wildfly-10.1.0.Final\\bin\\jboss-cli.bat";
+        return properties.getProperty("app.wildfly.cli");
     }
     
     private JmsQueue[] testJmsQueues() {
