@@ -1,4 +1,4 @@
-package za.co.brightcat.tools.workspace.bilrost;
+package za.co.brightcat.tools.workspace.wildfly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import za.co.brightcat.tools.workspace.Task;
-import za.co.brightcat.tools.workspace.bilrost.wildfly.JmsQueue;
 
 public class JmsQueuesTask implements Task {
 

@@ -1,4 +1,4 @@
-package za.co.brightcat.tools.workspace.bilrost;
+package za.co.brightcat.tools.workspace.wildfly;
 
 import za.co.brightcat.tools.workspace.Task;
 

@@ -1,10 +1,10 @@
 package za.co.brightcat.tools.workspace;
 
-import za.co.brightcat.tools.workspace.bilrost.JmsConnectionFactoryTask;
-import za.co.brightcat.tools.workspace.bilrost.JmsQueuesTask;
-import za.co.brightcat.tools.workspace.bilrost.InstallWebSphereTask;
-import za.co.brightcat.tools.workspace.bilrost.JdbcDatasourceTask;
-import za.co.brightcat.tools.workspace.bilrost.wildfly.JmsQueue;
+import za.co.brightcat.tools.workspace.wildfly.JmsConnectionFactoryTask;
+import za.co.brightcat.tools.workspace.wildfly.JmsQueuesTask;
+import za.co.brightcat.tools.workspace.wildfly.InstallWebSphereTask;
+import za.co.brightcat.tools.workspace.wildfly.JdbcDatasourceTask;
+import za.co.brightcat.tools.workspace.wildfly.JmsQueue;
 
 public class Main {
     public static void main(String[] args) {

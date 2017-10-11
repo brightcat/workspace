@@ -1,4 +1,4 @@
-package za.co.brightcat.tools.workspace.bilrost.wildfly;
+package za.co.brightcat.tools.workspace.wildfly;
 
 import java.util.Arrays;
 
