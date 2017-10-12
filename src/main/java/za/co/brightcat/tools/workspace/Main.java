@@ -2,7 +2,14 @@ package za.co.brightcat.tools.workspace;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import za.co.brightcat.tools.workspace.wildfly.Datasource;
 import za.co.brightcat.tools.workspace.wildfly.JmsConnectionFactoryTask;
 import za.co.brightcat.tools.workspace.wildfly.JmsQueuesTask;
@@ -20,6 +27,21 @@ public class Main implements Runnable {
 
     public Main() throws IOException {
         this.properties = properties();
+        setupLogger();
+    }
+    
+    private void setupLogger() {
+        Handler[] handlers = Logger.getLogger(Main.class.getName()).getParent().getHandlers();
+        System.out.println("handl ............... " + handlers.length);
+        System.out.println(handlers[0]);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        handlers[0].setFormatter(new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                final String message = MessageFormat.format(record.getMessage(), record.getParameters());
+                return String.format("%s  %s  %s", sdf.format(new Date(record.getMillis())), record.getLevel(), message);
+            }
+        });
     }
     
     private Properties properties() throws IOException {
